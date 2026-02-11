@@ -16,7 +16,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_genai import GoogleGenerativeAIError
+from langchain_google_genai.chat_models import ChatGoogleGenerativeAIError
 
 emb_fun = GoogleGenerativeAIEmbeddings(model=emb_model,google_api_key=gemini_api_key)
 
@@ -74,7 +74,7 @@ User Question:
 """
     try:
         response = llm.invoke(prompt).content
-    except GoogleGenerativeAIError as e :
+    except ChatGoogleGenerativeAIError as e :
         if "RESOURCE_EXHAUSTED" is str(e):
             return("Free limit is reached for today pls contact pregadesh")
         else:
