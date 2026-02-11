@@ -8,7 +8,7 @@ import streamlit as st
 gemini_api_key = st.secrets["gemini_api_key"]
 
 
-emb_model = "models/embedding-001"  #here im using gemini-embedding-001 
+emb_model = "gemini-embedding-001"  #here im using gemini-embedding-001 
 chroma_path = "data/chroma"
 coll_name = "personal_memory"
 
