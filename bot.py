@@ -1,7 +1,7 @@
 import streamlit as st
-from per_bot import questioner,reset_memory
+from gem_bot import questioner,reset_memory
 st.set_page_config(page_title="Personal Bot")
-st.title("My personal bot")
+st.title("Esh personal bot")
 
 if "chat" not in st.session_state:
     st.session_state.chat = []
