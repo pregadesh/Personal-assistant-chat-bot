@@ -1,20 +1,23 @@
-from dotenv import load_dotenv
-import os
+import streamlit as st
+#For local test
+#from dotenv import load_dotenv
+#import os
+#load_dotenv()
+#gemini_api_key = os.getenv("gemini_api_key")
+
+gemini_api_key = st.secrets["gemini_api_key"]
 
 
-load_dotenv()
-api_key = os.getenv("gemini_api_key")
-
-
-emb_model = "nomic-embed-text"
+emb_model = "models/embedding-001"  #here im using gemini-embedding-001 
 chroma_path = "data/chroma"
 coll_name = "personal_memory"
 
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-emb_fun = OllamaEmbeddings(model=emb_model)
+emb_fun = GoogleGenerativeAIEmbeddings(model=emb_model,google_api_key=gemini_api_key)
 
 vector_db = Chroma(
     persist_directory=chroma_path,
@@ -22,6 +25,11 @@ vector_db = Chroma(
     embedding_function=emb_fun
 )
 
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    google_api_key=gemini_api_key,
+    temperature=0.3
+)
 
 def memory_store(text, memory_type="conversation"):
     doc = Document(
@@ -33,16 +41,6 @@ def memory_store(text, memory_type="conversation"):
 def memory_retrieve(query, k=5):
     docs = vector_db.similarity_search(query, k)
     return "\n".join([doc.page_content for doc in docs])
-
-
-from langchain_google_genai import ChatGoogleGenerativeAI
-
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=api_key,
-    temperature=0.3
-)
-
 
 def reset_memory():
     global vector_db
