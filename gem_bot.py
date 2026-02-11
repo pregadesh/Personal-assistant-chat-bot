@@ -75,10 +75,11 @@ User Question:
     try:
         response = llm.invoke(prompt).content
     except ChatGoogleGenerativeAIError as e :
-        if "RESOURCE_EXHAUSTED" is str(e):
+        err_txt = str(e)
+        if "RESOURCE_EXHAUSTED" is err_txt or "quota" in err_txt.lower():
             return("Free limit is reached for today pls contact pregadesh")
         else:
-            return("So error have happned pls contact pregadesh")
+            return("Some error have happned pls contact pregadesh")
     memory_store(f"user: {user_in}", "conversation")
     memory_store(f"bot: {response}", "conversation")
 
