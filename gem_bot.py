@@ -26,14 +26,8 @@ vector_db = Chroma(
     embedding_function=emb_fun
 )
 
-llm_main_model = ChatGoogleGenerativeAI(
+llm = ChatGoogleGenerativeAI(
     model="gemini-3-flash-preview",
-    google_api_key=gemini_api_key,
-    temperature=0.3
-)
-#Act as a sub model when main ran out of quota
-llm_sub_model = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
     google_api_key=gemini_api_key,
     temperature=0.3
 )
@@ -79,22 +73,13 @@ User Question:
 {user_in}
 """
     try:
-        response = llm_main_model.invoke(prompt).content
+        response = llm.invoke(prompt).content
     except ChatGoogleGenerativeAIError as e :
         err_txt = str(e)
         if "RESOURCE_EXHAUSTED" in err_txt or "quota" in err_txt.lower():
-            try:
-                response = llm_sub_model.invoke(prompt).content
-                response += "\n gen3 input quota over using gen2.5"
-            except ChatGoogleGenerativeAIError as e2:
-                e2_txt = str(e2)
-                if "RESOURCE_EXHAUSTED" in e2_txt or "quota" in e2_txt.lower():
-                    return "Both model quota is Done plese contact pregadesh"
-                else:
-                    return "Some Other error happned please contact pregadesh."
+            return("Free limit is reached for today pls contact pregadesh")
         else:
-            return "Error happned in gen3 model please contact pregadesh"
-
+            return("Some error have happned pls contact pregadesh")
     memory_store(f"user: {user_in}", "conversation")
     memory_store(f"bot: {response}", "conversation")
 
