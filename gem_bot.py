@@ -27,7 +27,7 @@ vector_db = Chroma(
 )
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-3-flash-preview",
+    model="gemini-2.5-flash",
     google_api_key=gemini_api_key,
     temperature=0.3
 )
