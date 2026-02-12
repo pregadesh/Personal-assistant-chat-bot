@@ -79,20 +79,13 @@ User Question:
 {user_in}
 """
     try:
-        res = llm_main_model.invoke(prompt)
-        if isinstance(res.content,list):
-            response = res.content[0]["text"]
-        else:
-            response = res.content
+        response = llm_main_model.invoke(prompt).content
     except ChatGoogleGenerativeAIError as e :
         err_txt = str(e)
         if "RESOURCE_EXHAUSTED" in err_txt or "quota" in err_txt.lower():
             try:
-                res2 = llm_sub_model.invoke(prompt)
-                if isinstance(res2.content,list):
-                    response = res2.content[0]["text"]
-                else:
-                    response = res2.content
+                response = llm_sub_model.invoke(prompt).content
+                response += "\n gen3 input quota over using gen2.5"
             except ChatGoogleGenerativeAIError as e2:
                 e2_txt = str(e2)
                 if "RESOURCE_EXHAUSTED" in e2_txt or "quota" in e2_txt.lower():
